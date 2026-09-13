@@ -4,11 +4,24 @@ import { config } from "../config";
 let client: ReturnType<typeof twilio> | null = null;
 
 function getClient() {
-  if (!config.twilio.accountSid || !config.twilio.authToken) {
-    throw new Error("TWILIO_ACCOUNT_SID / TWILIO_AUTH_TOKEN are not configured");
+  if (!config.twilio.accountSid) {
+    throw new Error("TWILIO_ACCOUNT_SID is not configured");
   }
+
   if (!client) {
-    client = twilio(config.twilio.accountSid, config.twilio.authToken);
+    if (config.twilio.apiKeySid && config.twilio.apiKeySecret) {
+      // API Key auth: the account SID must be passed explicitly since the
+      // first two args authenticate as the key, not the account.
+      client = twilio(config.twilio.apiKeySid, config.twilio.apiKeySecret, {
+        accountSid: config.twilio.accountSid,
+      });
+    } else if (config.twilio.authToken) {
+      client = twilio(config.twilio.accountSid, config.twilio.authToken);
+    } else {
+      throw new Error(
+        "Configure either TWILIO_API_KEY_SID + TWILIO_API_KEY_SECRET, or TWILIO_AUTH_TOKEN, to authenticate the Twilio REST client",
+      );
+    }
   }
   return client;
 }

@@ -17,8 +17,19 @@ export const config = {
   port: Number(optional("PORT") ?? 3000),
 
   twilio: {
+    // Account SID (starts with AC) — required regardless of which auth style
+    // below is used, since it's how the REST client knows which account to hit.
     accountSid: optional("TWILIO_ACCOUNT_SID"),
+    // The real Account Auth Token (from the Console's main Account Info panel).
+    // This is ONLY used to verify inbound webhook signatures — Twilio signs
+    // webhooks with this token specifically, not an API Key Secret, so there's
+    // no way to substitute an API key here.
     authToken: optional("TWILIO_AUTH_TOKEN"),
+    // Optional: authenticate the REST client with an API Key (SK...) + Secret
+    // instead of the main Auth Token — Twilio's recommended pattern, since it
+    // can be revoked independently. Falls back to accountSid/authToken if unset.
+    apiKeySid: optional("TWILIO_API_KEY_SID"),
+    apiKeySecret: optional("TWILIO_API_KEY_SECRET"),
     phoneNumber: optional("TWILIO_PHONE_NUMBER"),
   },
 
