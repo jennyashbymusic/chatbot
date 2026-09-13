@@ -1,4 +1,4 @@
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenAI, ThinkingLevel } from "@google/genai";
 import { config } from "../config";
 import { JENNY_SYSTEM_PROMPT, PromptContext, buildUserContextBlock } from "../personality/systemPrompt";
 import { buildMemoryUpdatePrompt, parseMemoryUpdateResponse } from "./prompts";
@@ -25,7 +25,11 @@ export async function generateJennyReply(ctx: PromptContext, newFanMessage: stri
     contents: userContent,
     config: {
       systemInstruction: JENNY_SYSTEM_PROMPT,
-      maxOutputTokens: 300,
+      maxOutputTokens: 600,
+      // gemini-3.6-flash can't fully disable thinking, but "minimal" keeps it
+      // from eating most of maxOutputTokens before producing visible text —
+      // without this, replies risk truncating mid-sentence.
+      thinkingConfig: { thinkingLevel: ThinkingLevel.MINIMAL },
     },
   });
 
@@ -47,7 +51,8 @@ export async function updateFanMemorySummary(params: {
     model: config.gemini.model,
     contents: buildMemoryUpdatePrompt(params),
     config: {
-      maxOutputTokens: 400,
+      maxOutputTokens: 700,
+      thinkingConfig: { thinkingLevel: ThinkingLevel.MINIMAL },
     },
   });
 
