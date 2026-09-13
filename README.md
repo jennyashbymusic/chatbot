@@ -42,6 +42,15 @@ Not yet implemented (see Section 7 of the master doc):
 - `src/server.ts` — local dev entry point (`app.listen`)
 - `api/index.ts` — Vercel entry point (exports the Express app directly)
 
+## Chatting with Jenny locally (no SMS provider needed)
+
+`npm run chat` starts an interactive terminal chat that exercises the same
+moderation + LLM code paths as production, but skips Twilio/Telnyx and
+Supabase entirely — no phone number, no carrier registration, no database
+required. Useful for testing personality/prompt changes and the
+crisis-response override for free while an SMS provider is still being sorted
+out.
+
 ## Testing the webhook locally
 
 Use `ngrok http 3000` (or similar) to get a public URL, point Twilio's SMS
