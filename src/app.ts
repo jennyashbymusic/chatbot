@@ -1,5 +1,6 @@
 import express from "express";
 import { isValidTwilioRequest } from "./messaging/twilio";
+import { isValidTelnyxRequest } from "./messaging/telnyx";
 import { handleInboundMessage } from "./orchestrator";
 import { constructStripeEvent, handleStripeEvent } from "./billing/stripe";
 
@@ -26,6 +27,43 @@ export function createApp() {
     } catch (err) {
       console.error("[stripe webhook] error", err);
       res.status(400).send("Webhook error");
+    }
+  });
+
+  // Telnyx also needs the raw body for its Ed25519 signature verification, so
+  // this must be registered before the JSON body parser too.
+  app.post("/webhooks/telnyx/sms", express.raw({ type: "application/json" }), async (req, res) => {
+    try {
+      const signature = req.header("telnyx-signature-ed25519");
+      const timestamp = req.header("telnyx-timestamp");
+
+      if (!isValidTelnyxRequest({ signature, timestamp, rawBody: req.body })) {
+        res.status(403).send("Invalid Telnyx signature");
+        return;
+      }
+
+      const payload = JSON.parse(req.body.toString("utf8"));
+      const eventType = payload?.data?.event_type;
+
+      if (eventType !== "message.received") {
+        res.status(200).send("ignored");
+        return;
+      }
+
+      const fromField = payload.data.payload.from;
+      const fromPhoneNumber = typeof fromField === "string" ? fromField : fromField?.phone_number;
+      const body = payload.data.payload.text as string;
+
+      // See the /webhooks/sms handler below for why it's safe to keep working
+      // after responding on a serverless platform.
+      res.status(200).send("ok");
+
+      await handleInboundMessage({ fromPhoneNumber, body });
+    } catch (err) {
+      console.error("[telnyx webhook] error", err);
+      if (!res.headersSent) {
+        res.status(500).send("Internal error");
+      }
     }
   });
 

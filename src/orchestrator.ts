@@ -4,7 +4,7 @@ import { findOrCreateFanByPhone, decrementCredit } from "./db/fans";
 import { getFanMemory, upsertFanMemory } from "./db/memory";
 import { logMessage, getRecentMessages, countMessagesThisMonth } from "./db/conversations";
 import { generateJennyReply, updateFanMemorySummary } from "./llm";
-import { sendSms, sendMms } from "./messaging/twilio";
+import { sendSms, sendMms } from "./messaging";
 import { generateVoiceNote } from "./voice/elevenlabs";
 import { config } from "./config";
 

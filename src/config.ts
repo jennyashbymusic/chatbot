@@ -33,6 +33,21 @@ export const config = {
     phoneNumber: optional("TWILIO_PHONE_NUMBER"),
   },
 
+  messaging: {
+    // "twilio" (default) or "telnyx" — lets the SMS provider be swapped
+    // without touching orchestrator.ts, e.g. to use Telnyx's trial tier while
+    // Twilio's trial account is blocked on its custom-template restriction.
+    provider: (optional("MESSAGING_PROVIDER") ?? "twilio") as "twilio" | "telnyx",
+  },
+
+  telnyx: {
+    apiKey: optional("TELNYX_API_KEY"),
+    phoneNumber: optional("TELNYX_PHONE_NUMBER"),
+    // Base64 Ed25519 public key from Mission Control → Account Settings →
+    // Keys & Credentials — used to verify inbound webhook signatures.
+    publicKey: optional("TELNYX_PUBLIC_KEY"),
+  },
+
   llm: {
     // "anthropic" (default) or "gemini" — lets Jenny's brain be swapped
     // without touching any calling code, e.g. to use Gemini's free tier while
@@ -46,7 +61,7 @@ export const config = {
 
   gemini: {
     apiKey: optional("GEMINI_API_KEY"),
-    model: optional("GEMINI_MODEL") ?? "gemini-2.5-flash",
+    model: optional("GEMINI_MODEL") ?? "gemini-3.6-flash",
   },
 
   openai: {

@@ -34,7 +34,7 @@ Not yet implemented (see Section 7 of the master doc):
 - `src/safety/` — moderation gate (OpenAI Moderation API + keyword backup) and crisis response
 - `src/llm/` — Jenny's "brain": `anthropic.ts` and `gemini.ts` implement the same two functions (reply generation + fan memory summarization), and `index.ts` picks between them based on `LLM_PROVIDER` — switch providers without touching any calling code
 - `src/db/` — Supabase schema and typed accessors (fans, memory, conversations)
-- `src/messaging/twilio.ts` — SMS/MMS send + inbound webhook signature validation
+- `src/messaging/` — `twilio.ts` and `telnyx.ts` both implement send/inbound-signature-verification; `index.ts` picks the outbound sender based on `MESSAGING_PROVIDER`. Inbound webhooks stay provider-specific (`/webhooks/sms` for Twilio, `/webhooks/telnyx/sms` for Telnyx) since the two providers' payload shapes are unrelated.
 - `src/voice/elevenlabs.ts` — voice-note generation for the Voice tier
 - `src/billing/stripe.ts` — subscription/credit-pack webhook handling
 - `src/orchestrator.ts` — wires the above into the Section 4 message flow
