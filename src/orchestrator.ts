@@ -3,7 +3,7 @@ import { CRISIS_RESPONSE_MESSAGE, alertHumanOfCrisisFlag } from "./safety/crisis
 import { findOrCreateFanByPhone, decrementCredit } from "./db/fans";
 import { getFanMemory, upsertFanMemory } from "./db/memory";
 import { logMessage, getRecentMessages, countMessagesThisMonth } from "./db/conversations";
-import { generateJennyReply, updateFanMemorySummary } from "./claude/client";
+import { generateJennyReply, updateFanMemorySummary } from "./llm";
 import { sendSms, sendMms } from "./messaging/twilio";
 import { generateVoiceNote } from "./voice/elevenlabs";
 import { config } from "./config";

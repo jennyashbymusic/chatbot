@@ -33,8 +33,20 @@ export const config = {
     phoneNumber: optional("TWILIO_PHONE_NUMBER"),
   },
 
+  llm: {
+    // "anthropic" (default) or "gemini" — lets Jenny's brain be swapped
+    // without touching any calling code, e.g. to use Gemini's free tier while
+    // Anthropic credits aren't funded yet.
+    provider: (optional("LLM_PROVIDER") ?? "anthropic") as "anthropic" | "gemini",
+  },
+
   anthropic: {
     apiKey: optional("ANTHROPIC_API_KEY"),
+  },
+
+  gemini: {
+    apiKey: optional("GEMINI_API_KEY"),
+    model: optional("GEMINI_MODEL") ?? "gemini-2.5-flash",
   },
 
   openai: {

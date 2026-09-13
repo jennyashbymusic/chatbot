@@ -32,7 +32,7 @@ Not yet implemented (see Section 7 of the master doc):
 
 - `src/personality/systemPrompt.ts` — Jenny's system prompt and few-shot voice examples
 - `src/safety/` — moderation gate (OpenAI Moderation API + keyword backup) and crisis response
-- `src/claude/client.ts` — Claude reply generation + fan memory summarization
+- `src/llm/` — Jenny's "brain": `anthropic.ts` and `gemini.ts` implement the same two functions (reply generation + fan memory summarization), and `index.ts` picks between them based on `LLM_PROVIDER` — switch providers without touching any calling code
 - `src/db/` — Supabase schema and typed accessors (fans, memory, conversations)
 - `src/messaging/twilio.ts` — SMS/MMS send + inbound webhook signature validation
 - `src/voice/elevenlabs.ts` — voice-note generation for the Voice tier
